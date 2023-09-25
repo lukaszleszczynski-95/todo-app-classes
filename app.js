@@ -1,6 +1,6 @@
 class TaskManager {
     constructor(){
-        this.tasks = [];
+        this.tasks = Storage.getTodos();
 
         const titleElement = document.querySelector('.js-title');
         const descriptionElement = document.querySelector('.js-description');
@@ -13,6 +13,8 @@ class TaskManager {
         titleElement.value = '';
         descriptionElement.value = '';
         dateElement.value = '';
+
+        
         
 })
 
@@ -21,8 +23,10 @@ class TaskManager {
     }
 
     addTodo(todo){
+        this.tasks = Storage.getTodos()
         this.tasks.push(todo);
-        console.log(this.tasks)
+        console.log(this.tasks);
+      localStorage.setItem('todo', JSON.stringify(todo));
         UI.renderTodo(todo);
 
     }
@@ -48,29 +52,52 @@ class Todo {
 
 class UI {
 
+    static displayTodos(){
+        
+    }
+
     static renderTodo(todo){
         const displayList = document.querySelector('.js-display');
+
         
+           const {title, description, date} = todo;
+
             const div = document.createElement('div')
 
             div.innerHTML = `
                                     <div class="js-task">
-                                        <h3>${todo.title}</h3>
-                                        <p>${todo.description}</p>
-                                        <p>${todo.date}</p>
+                                        <h3>${title}</h3>
+                                        <p>${description}</p>
+                                        <p>${date}</p>
                                         </div>
                                         `
             displayList.appendChild(div);
-            
-            
-       
-            
         
+        
+     
         
     }
 }
 
+class Storage {
+    
+    static getTodos(){
+        let todos;
+        if(localStorage.getItem('todos') === null){
+            todos = [];
+        } else {
+            JSON.parse(localStorage.getItem('todos'));
+        }
+        return todos
+    }
+}
+
 const newApp = new TaskManager();
+
+UI.renderTodo()
+
+
+
 
 
 
