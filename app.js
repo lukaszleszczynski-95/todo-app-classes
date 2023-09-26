@@ -1,66 +1,56 @@
+
 class TaskManager {
     constructor(){
-        this.tasks = Storage.getTodos();
+        this.tasks = Storage.loadLocally();
 
-        const titleElement = document.querySelector('.js-title');
-        const descriptionElement = document.querySelector('.js-description');
-        const dateElement = document.querySelector('.js-date');
-        const addBtn = document.querySelector('.js-button')
+        this.titleElement = document.querySelector('.js-title');
+        this.descriptionElement = document.querySelector('.js-description');
+        this.dateElement = document.querySelector('.js-date');
+        this.addBtn = document.querySelector('.js-button')
 
-        addBtn.addEventListener('click', () => {
-        const todo = new Todo(titleElement.value, descriptionElement.value, dateElement.value);
+        this.addBtn.addEventListener('click', () => {
+        const todo = new Todo(this.titleElement.value, this.descriptionElement.value, this.dateElement.value);
         this.addTodo(todo);
-        titleElement.value = '';
-        descriptionElement.value = '';
-        dateElement.value = '';
+        
+        this.titleElement.value = '';
+        this.descriptionElement.value = '';
+        this.dateElement.value = '';
 
-        
-        
 })
-
-
-
     }
 
     addTodo(todo){
-        this.tasks = Storage.getTodos()
         this.tasks.push(todo);
         console.log(this.tasks);
-      localStorage.setItem('todo', JSON.stringify(todo));
-        UI.renderTodo(todo);
+        Storage.saveLocally(this.tasks);
+        UI.renderTodo(this.tasks);
 
     }
 }
 
 
 
-class Todo {
 
-    
+
+class Todo {
     constructor(title, description, date){
         this.title = title;
         this.description = description;
         this.date = date;
         this.completed = false;
-
-       
     }
-
-    
-
 }
 
 class UI {
-
-    static displayTodos(){
-        
-    }
-
-    static renderTodo(todo){
+    static renderTodo(tasks){
         const displayList = document.querySelector('.js-display');
-
+        //displayList.innerHTML = '';
+        while(displayList.firstChild){
+            displayList.removeChild(displayList.firstChild)
+        };
         
-           const {title, description, date} = todo;
+        tasks.forEach((todo) => {
+            const {title, description, date} = todo;
 
             const div = document.createElement('div')
 
@@ -72,29 +62,28 @@ class UI {
                                         </div>
                                         `
             displayList.appendChild(div);
-        
-        
-     
+        });   
+
         
     }
 }
 
-class Storage {
-    
-    static getTodos(){
-        let todos;
-        if(localStorage.getItem('todos') === null){
-            todos = [];
-        } else {
-            JSON.parse(localStorage.getItem('todos'));
-        }
-        return todos
+class Storage{
+    static saveLocally(tasks){
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+
+    static loadLocally(){
+        return JSON.parse(localStorage.getItem('tasks')) || []
     }
 }
 
 const newApp = new TaskManager();
 
-UI.renderTodo()
+UI.renderTodo(newApp.tasks)
+
+
+
 
 
 
