@@ -12,7 +12,9 @@ class TaskManager {
         this.addBtn = document.querySelector('.js-button');
         this.todoContainer = document.querySelector('.js-display');
 
+        // Adding event listener to the whole containers that hold all the todo items
         this.todoContainer.addEventListener('click', (e) => {
+            // Cheking if target is the icon and removing it
             if(e.target.classList.contains('icon')){
                 UI.deleteTodo(e.target);
             }
@@ -24,8 +26,16 @@ class TaskManager {
         //  Creating new object by means of class Todo, and passing all required parameters    
         const todo = new Todo(this.titleElement.value, this.descriptionElement.value, this.dateElement.value);
 
-        // Calling Taskmanager method to add todo
-        this.addTodo(todo);
+        // Checking if any input value is empty
+        if(this.titleElement.value === '' || this.descriptionElement.value === '' || this.dateElement.value === ''){
+            // Alert and returning when one of the fields is empty
+            alert('Please fill in all fields');
+            return
+        } else {
+            // Creating new todo
+            this.addTodo(todo);
+        }
+        
 
        
         
@@ -56,11 +66,12 @@ class TaskManager {
 // Creating a new class Todo
 class Todo {
     constructor(title, description, date){
-        // Setting all properties
-        this.title = title;
-        this.description = description;
-        this.date = date;
-        this.completed = false;
+            // Setting all properties
+            this.title = title;
+            this.description = description;
+            this.date = date;
+            this.completed = false;
+        
     }
 }
 
@@ -103,29 +114,47 @@ class UI {
         });     
     }
 
+    // Static method to remove tod that takes in el parameter which is targeted delete button
     static deleteTodo(el){
-        document.querySelector('.modal-container').style.display = 'block';
-        const tasks = newApp.tasks;
+        // Displaying modal, to make sure user want to delte the todo
+        document.querySelector('.modal-container').classList.add('active');
+        document.querySelector('body :not(.modal-container)').style.pointerEvents = 'none';
+        console.log(el)
+
+        // Getting two buttons that are present in modal
         const yesBtn = document.querySelector('.js-yes');
         const noBtn = document.querySelector('.js-no');
 
+        // Handling and removing todo after confirming by click yes button
         yesBtn.addEventListener('click', () => {
-            el.parentElement.parentElement.parentElement.remove();
-            document.querySelector('.modal-container').style.display = 'none';
-            const index = el.parentElement.parentElement.parentElement.getAttribute('data-index');
-            tasks.splice(index, 1);
-            Storage.saveLocally(tasks);
-            
-           
+            // Checking if el is null or undefined e.g. when clicked a few times NO button
+            if(el === undefined || el === null){
+                return
+            } else {
+                // Traversing and removing the element that has to be removed based on the 'el' parameter which is a delete button.
+                el.parentElement.parentElement.parentElement.remove();
+                // Making modal disappear after clicking the button
+                document.querySelector('.modal-container').classList.remove('active');
+                document.querySelector('body :not(.modal-container)').style.pointerEvents = 'all';
+                // Getting the index of removed element
+                const index = el.parentElement.parentElement.parentElement.getAttribute('data-index');
+                // Calling static fiunction that takes in index parameter and removes element from local storage
+                Storage.removeLocally(index); 
+            }
+             
         })
 
+        // Handling no button
         noBtn.addEventListener('click', () => {
-            document.querySelector('.modal-container').style.display = 'none';
+            // Maing modal disappear and returning as the removing is denied.
+            document.querySelector('.modal-container').classList.remove('active');
+            // Setting el as undefined, otherwise when we click a few times no on a different todos, and then we click yes on only one, it will be removed all of them as it is tored in this variable, so the goal is to clear this value
+            el = undefined;
+            document.querySelector('body :not(.modal-container)').style.pointerEvents = 'all';
+            
             return
         })
-        
-        
-        
+          
     }
 
 }
@@ -143,6 +172,14 @@ class Storage{
     static loadLocally(){
         return JSON.parse(localStorage.getItem('tasks')) || []
     }
+
+    // Static method that removes / updates todo list(tasks) in local storage.
+    static removeLocally(index){
+        const tasks = newApp.tasks;
+        tasks.splice(index, 1);
+        Storage.saveLocally(tasks);
+    }
+
 }
 
 // Creating new object by means of class TaskManager
