@@ -6,6 +6,7 @@
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
    <div class="wrapper">
@@ -24,8 +25,22 @@
             <h3>Task 1</h3>
             <p>This is task no 1</p>
             <p>23/11/2023</p>
+            <div class="div-i">
+                <i class="fa-solid fa-trash fa-2xl"></i>
+            </div>
+            
         </div>
     </template>
+
+    <!-- Template for modal -->
+
+    <div class="modal-container">
+        <p class="message">Are you sure you want to delete this todo ?</p>
+        <div class="js-buttons">
+            <button class="js-yes">Yes</button>
+            <button class="js-no">No</button>
+        </div>
+    </div>
 
 
 <script src="app.js">
