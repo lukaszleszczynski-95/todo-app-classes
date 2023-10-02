@@ -75,7 +75,11 @@ class Todo {
             this.description = description;
             this.date = date;
             this.completed = false;
+                    this.todoContainer = document.querySelector('.js-display');
+
     }
+
+
     
 }
 
@@ -87,6 +91,7 @@ class UI {
     static renderTodo(tasks){
         // Getting a container where all todos will be displayed
         const displayList = document.querySelector('.js-display');
+        this.isCompleted = false;
         
         // Removing all existing todo before rendering the udpdated todo list by removing every first child untill the container is totally empty
         while(displayList.firstChild){
@@ -122,7 +127,15 @@ class UI {
 
     // Static method to set todo as a complete
     static completeTodo(container){
-     container.closest(' div .js-task').style.background = 'green';
+       if(!this.isCompleted){
+        container.closest(' div .js-task').style.background = 'green';
+        this.isCompleted = true;
+       } else if(this.isCompleted) {
+        container.closest(' div .js-task').style.background = 'white';
+        this.isCompleted = false;
+
+       }
+     
         
     }
 
