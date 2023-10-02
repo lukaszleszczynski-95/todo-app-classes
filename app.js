@@ -12,14 +12,21 @@ class TaskManager {
         this.addBtn = document.querySelector('.js-button');
         this.todoContainer = document.querySelector('.js-display');
 
-        // Adding event listener to the whole containers that hold all the todo items
+        // Adding event listener to the whole container that holds all the todo items
         this.todoContainer.addEventListener('click', (e) => {
             // Cheking if target is the icon and removing it
             if(e.target.classList.contains('icon')){
                 UI.deleteTodo(e.target);
             }
+        });
+
+        this.todoContainer.addEventListener('dblclick', (e) => {;
+           UI.completeTodo(e.target);
+            
+
         })
 
+       
         // Adding event listener to add new todo
         this.addBtn.addEventListener('click', () => {
          
@@ -36,9 +43,6 @@ class TaskManager {
             this.addTodo(todo);
         }
         
-
-       
-        
         // Clearing all inputs after adding and rendering new todo for better UI
         this.titleElement.value = '';
         this.descriptionElement.value = '';
@@ -46,6 +50,7 @@ class TaskManager {
 
 })
     }
+
     // Method for adding todo by passing newly created object as a parameter
     addTodo(todo){
         // Pushing new todo to the array that stores alle todos (objects)
@@ -55,7 +60,6 @@ class TaskManager {
         Storage.saveLocally(this.tasks);
         // Rendering todo list updated with new todo object. We are passing current array as a parameter.
         UI.renderTodo(this.tasks);
-
     }
 
 }
@@ -71,9 +75,10 @@ class Todo {
             this.description = description;
             this.date = date;
             this.completed = false;
-        
     }
+    
 }
+
 
 // Creating new class responsible for updating UI
 class UI {
@@ -112,6 +117,13 @@ class UI {
             // Appending div to the container that displays all todos
             displayList.appendChild(div);
         });     
+    }
+
+
+    // Static method to set todo as a complete
+    static completeTodo(container){
+     container.closest(' div .js-task').style.background = 'green';
+        
     }
 
     // Static method to remove tod that takes in el parameter which is targeted delete button
@@ -188,6 +200,17 @@ const newApp = new TaskManager();
 
 // Calling a static method that take in the array of todo object from main object TaskManager to render todo list in the beginning, and after refreshing.
 UI.renderTodo(newApp.tasks)
+
+console.log(newApp.containers)
+
+// const containers = document.querySelectorAll('.js-task');
+// console.log(containers);
+
+// containers.forEach(container => {
+//     container.addEventListener('dblclick', () => {
+//         container.style.background = 'green';
+//     })
+// })
 
 
 
